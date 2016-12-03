@@ -50,14 +50,14 @@ def add_geodata_to_doc(doc, collection, geo_data):
     return True
 
 
-def add_address_string(doc, collection):
+def add_geodata(doc, collection):
     """
     Finds the address string and updates the db with that information.
     """
     address_string = "{a} {s}, Jersey City, NJ".format(a=doc['Address'],
                                                        s=doc['Street'])
-    collection.update_one({"_id": doc['_id']},
-                          {"$set": {"addressString": address_string }})
+
+    add_geodata_to_doc(doc, collection, geocode.get_geocode_for_address(address_string))
     return True
 
 
