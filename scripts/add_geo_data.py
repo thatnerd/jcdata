@@ -69,7 +69,7 @@ def add_all_address_strings(collection):
     """
     curs = collection.find()
     for doc in curs:
-        add_address_string(doc, collection)
+        add_geodata(doc, collection)
     return True
 
 
