@@ -16,16 +16,27 @@
       </style>
     </head>
     <body>
-    abc
+
+
+<div id="container2">
+    abcacdf
+    <!-- This element's contents will be replaced with your component. -->
+</div>
+abc
          <div id="map">def</div>
+
+
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
          <script>
             var map;
             function initMap() {
-                console.log("dslakfdsfa");
+                console.log("In page");
+
                 // Constructor creates a new map - only center and zoom are required.
                 map = new google.maps.Map(document.getElementById('map'), {
                     center : { lat : 40.724243, lng: -74.042521 },
-                    zoom: 15
+                    zoom: 13
                 });
 
                 var myhouse = {lat: 40.724243, lng: -74.042521};
@@ -37,6 +48,16 @@
                 var infowindow = new google.maps.InfoWindow({
                   content : "This is my infowindow."
                 });
+
+
+            var myhouse66 = {lat: 40.699141, lng: -74.096359};
+            var marker66 = new google.maps.Marker({
+                position: myhouse66, map: map, title: 'First Marker!'
+            });
+            var infowindow66 = new google.maps.InfoWindow({
+                content: "This is my infowindow 26 WOODLAND AV, Jersey City, NJ."
+            });
+
                 var locations = { title : 'home' , location : "myhouse" };
                 marker.addListener('click', function() {
                     infowindow.open(map, marker);
@@ -46,5 +67,28 @@
         <script async defer
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_XksKhhz1Miqhw3Y8_LZcmAc90wypSiw&v=3&callback=initMap">
         </script>
+    <script>
+      var ExampleApplication = React.createClass({
+        render: function() {
+          var elapsed = Math.round(this.props.elapsed  / 100);
+          var seconds = elapsed / 10 + (elapsed % 10 ? '' : '.0' );
+          var message =
+            'React has been successfully running for ' + seconds + ' seconds.';
+
+          return React.DOM.p(null, message);
+        }
+      });
+
+      // Call React.createFactory instead of directly call ExampleApplication({...}) in React.render
+      var ExampleApplicationFactory = React.createFactory(ExampleApplication);
+
+      var start = new Date().getTime();
+      setInterval(function() {
+        ReactDOM.render(
+          ExampleApplicationFactory({elapsed: new Date().getTime() - start}),
+          document.getElementById('container2')
+        );
+      }, 50);
+    </script>
     </body>
 </html>
