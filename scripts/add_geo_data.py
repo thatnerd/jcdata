@@ -17,7 +17,7 @@ Options:
 from docopt import docopt
 import pymongo
 import time
-
+import geocode
 
 def get_documents(collection):
     """
@@ -33,6 +33,8 @@ def get_addresses(doc):
     """
     fields = ['_id', 'Address', 'Street']
     new_doc = {field: doc[field] for field in fields}
+    address = "{} {}, Jersey City, NJ".format(new_doc['Address'], new_doc['Street'])
+    new_doc['newaddress'] = geocode.get_geocode_for_address(address)
     return new_doc
 
 def add_geodata_to_doc(doc, collection, geo_data):
