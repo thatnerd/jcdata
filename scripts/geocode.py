@@ -8,6 +8,12 @@ import logging
 geocode_apikey = "AIzaSyB_XksKhhz1Miqhw3Y8_LZcmAc90wypSiw"
 geocode_urlbase = "https://maps.googleapis.com/maps/api/geocode/json?key=" + geocode_apikey
 
+# logger
+logger = logging.getLogger('main')
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.DEBUG)
+
+
 class GeoCode:
     def __init__(self, latitude, longitude):
         self._latitude = latitude
@@ -23,10 +29,6 @@ class GeoCode:
 
 
 def get_geocode_for_address(street_address):
-    logger = logging.getLogger('main')
-    logger.addHandler(logging.StreamHandler())
-    logger.setLevel(logging.DEBUG)
-
     geocode_params = { 'address' : street_address }
     geocode_url=geocode_urlbase + "&" + urllib.urlencode(geocode_params)
     logger.info("Fetcing via URL %s", geocode_url)
