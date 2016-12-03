@@ -12,30 +12,14 @@ Options:
     --dbname <dbname>       Name of the database with the data [default: jc]
     --collname <collname>   Collection in the db with the data
                                 [default: sewerMaintenance]
+    --addAddress            Whether or not to add the 'addressString' field to
+                                all documents [default: False].
 """
 
 from docopt import docopt
 import pymongo
 import time
 import geocode
-
-def get_documents(collection):
-    """
-    Captures all documents in the collection.
-    """
-    curs = collection.find()
-    return curs
-
-
-def get_addresses(doc):
-    """
-    Returns a smaller doc with just the _id, Address, and Street fields.
-    """
-    fields = ['_id', 'Address', 'Street']
-    new_doc = {field: doc[field] for field in fields}
-    address = "{} {}, Jersey City, NJ".format(new_doc['Address'], new_doc['Street'])
-    new_doc['newaddress'] = geocode.get_geocode_for_address(address)
-    return new_doc
 
 def add_geodata_to_doc(doc, collection, geo_data):
     """
@@ -66,6 +50,17 @@ def add_geodata_to_doc(doc, collection, geo_data):
     return True
 
 
+def add_address_string(doc, collection):
+    """
+    Finds the address string and updates the db with that information.
+    """
+    address_string = "{a} {s}, Jersey City, NJ".format(a=doc['Address'],
+                                                       s=doc['Street'])
+    collection.update_one({"_id": doc['_id']},
+                          {"$set": {"addressString": address_string }})
+    return True
+
+
 def main():
     opts = docopt(__doc__)
     hostname = opts['--host']
@@ -75,9 +70,13 @@ def main():
     client = pymongo.MongoClient(host=hostname, port=port)
     db = client[dbname]
     collection = db[collname]
-    curs = get_documents(collection)
-    for doc in curs:
-        print get_addresses(doc)
+    curs = collection.find()
+    print opts
+    if opts['--addAddress'] is True:
+        for doc in curs:
+            print "Adding address to doc with _id : {_id}".format(_id=doc["_id"])
+            new_doc = collection.find_one({"_id": doc["_id"]})
+
 
 
 if __name__ == '__main__':
