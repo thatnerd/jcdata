@@ -19,22 +19,6 @@ import pymongo
 import time
 
 
-def get_documents(collection):
-    """
-    Captures all documents in the collection.
-    """
-    curs = collection.find()
-    return curs
-
-
-def get_addresses(doc):
-    """
-    Returns a smaller doc with just the _id, Address, and Street fields.
-    """
-    fields = ['_id', 'Address', 'Street']
-    new_doc = {field: doc[field] for field in fields}
-    return new_doc
-
 def add_geodata_to_doc(doc, collection, geo_data):
     """
     Updates doc in the database to include geo data.
@@ -64,6 +48,17 @@ def add_geodata_to_doc(doc, collection, geo_data):
     return True
 
 
+def add_address_string(doc, collection):
+    """
+    Finds the address string and updates the db with that information.
+    """
+    address_string = "{a} {s}, Jersey City, NJ".format(a=doc['Address'], 
+                                                       s=doc['Street'])
+    collection.update_one({"_id": doc['_id']},
+                          {"$set": {"addressString": address_string }})
+    return True
+
+
 def main():
     opts = docopt(__doc__)
     hostname = opts['--host']
@@ -73,9 +68,12 @@ def main():
     client = pymongo.MongoClient(host=hostname, port=port)
     db = client[dbname]
     collection = db[collname]
-    curs = get_documents(collection)
+    curs = collection.find()
     for doc in curs:
-        print get_addresses(doc)
+        print "Printing doc with _id : {_id}".format(_id=doc["_id"])
+        add_address_string(doc, collection)
+        new_doc = collection.find_one({"_id": doc["_id"]})
+        print new_doc["addressString"]
 
 
 if __name__ == '__main__':
