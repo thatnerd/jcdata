@@ -19,6 +19,9 @@ def get_geocode_for_address(street_address):
     geocode_url=geocode_urlbase + "&" + urllib.urlencode(geocode_params)
     logger.info("Fetcing via URL %s", geocode_url)
     data = json.load(urllib2.urlopen(geocode_url))
+    if data["results"] is None or not data["results"]:
+        raise ValueError("Could not lookup address for {}".format(street_address))
+
     location = data["results"][0]["geometry"]["location"]
     return {
         "location": {
