@@ -25,7 +25,7 @@ def get_geocode_for_address(street_address):
             "type": "Point",
             "coordinates": [ location["lat"], location["lng"] ]
         },
-        "name" : "abc"
+        "name" : street_address
     }
 
 
