@@ -16,27 +16,28 @@
       </style>
     </head>
     <body>
-         <div id="map"></div>
+    abc
+         <div id="map">def</div>
          <script>
             var map;
             function initMap() {
+                console.log("dslakfdsfa");
                 // Constructor creates a new map - only center and zoom are required.
                 map = new google.maps.Map(document.getElementById('map'), {
                     center : { lat : 40.724243, lng: -74.042521 },
                     zoom: 15
                 });
+
                 var myhouse = {lat: 40.724243, lng: -74.042521};
                 var marker = new google.maps.Marker({
                     position: myhouse,
                     map: map,
                     title: 'First Marker!'
                 });
-                var infowindow = new google.maps.infoWindow({
+                var infowindow = new google.maps.InfoWindow({
                   content : "This is my infowindow."
                 });
-                var locations = {
-                    { title : 'home' , location: myhouse }
-                }
+                var locations = { title : 'home' , location : "myhouse" };
                 marker.addListener('click', function() {
                     infowindow.open(map, marker);
                 });
