@@ -12,6 +12,8 @@ Options:
     --dbname <dbname>       Name of the database with the data [default: jc]
     --collname <collname>   Collection in the db with the data
                                 [default: sewerMaintenance]
+    --addAddress            Whether or not to add the 'addressString' field to
+                                all documents [default: False].
 """
 
 from docopt import docopt
@@ -69,11 +71,12 @@ def main():
     db = client[dbname]
     collection = db[collname]
     curs = collection.find()
-    for doc in curs:
-        print "Printing doc with _id : {_id}".format(_id=doc["_id"])
-        add_address_string(doc, collection)
-        new_doc = collection.find_one({"_id": doc["_id"]})
-        print new_doc["addressString"]
+    print opts
+    if opts['--addAddress'] is True:
+        for doc in curs:
+            print "Adding address to doc with _id : {_id}".format(_id=doc["_id"])
+            new_doc = collection.find_one({"_id": doc["_id"]})
+
 
 
 if __name__ == '__main__':
